@@ -197,8 +197,7 @@ const addRole = () =>
       ])
       .then(selection =>
         {
-          let department = selection.department;
-          data.push(department);
+          data.push(selection.department);
           db.query(`INSERT INTO ROLE (title, salary, department_id) VALUES (?, ?, ?)`, data , (err, result) =>
           {
             if (err) {
@@ -246,8 +245,60 @@ const addEmployee = () =>
           return false;
         }    
       }
-    },
+    }
   ])
+    .then(answer =>
+      {
+        let data = [answer.first, answer.last];
+        db.query('SELECT role.id, role.title FROM ROLE', (err,result) =>
+        {
+          if (err) {
+            console.log(err);
+          }
+          const roleArr = result.map(({name, id}) => ({name: title, value:id}));
+
+          inquirer.prompt([
+            {
+              type: 'list',
+              name: 'role',
+              message: 'What role does the employee have?',
+              choices: roleArr
+            }
+          ])
+          .then(answer =>
+            {
+              data.push(answer.role);
+              db.query('SELECT * FROM EMPLOYEE', (err,result) =>
+              {
+                if (err) {
+                  console.log(err);
+                }
+                const managers = result.map(({id,first_name,last_name}) => ({name: first_name + " " + last_name, value:id}));
+
+                inquirer.prompt([
+                  {
+                    type: 'list',
+                    name: 'manager',
+                    message: 'Who is the manager of this employee?',
+                    choices: managers
+                  }
+                ])
+                  .then(answer =>
+                    {
+                      data.push(answer.manager);
+                      db.query('INSERT INTO EMPLOYEE (first_name, last_name, role_id, manager_id VALUES(?,?,?,?', (err, result) =>
+                      {
+                        if (err) {
+                          console.log(err);
+                        }
+                        console.table(result);
+                        displayEmployees();
+                      })
+                    })
+              })
+            })
+        })
+      })
 }
 
 const updateEmployee = () =>
