@@ -13,7 +13,7 @@ const db = mysql.createConnection(
   console.log('Connected to the employee database.')
 );
 
-const presentOptions = () =>
+const init = () =>
 {
   return inquirer.prompt([
     {
@@ -37,17 +37,17 @@ const presentOptions = () =>
     if(answer.options == 'View all departments')
     {
       //Return table with department names and ids
-      getDepartments();
+      displayDepartments();
     }
     if(answer.options == 'View all roles')
     {
       //Return job title, role id, department, and salary for role
-      getRoles();
+      displayRoles();
     }
     if(answer.options == 'View all employees')
     {
       //Return table with employee ids, first name, last name, job title, department, salary, and manager
-      getEmployees();
+      displayEmployees();
     }
     if(answer.options == 'Add a department')
     {
@@ -67,11 +67,12 @@ const presentOptions = () =>
     if(answer.options == 'Update an employee role')
     {
       //Function that selects an employee to update, then updates their info in database
+      updateEmployee();
     }
   });
 }
 
-const getDepartments = () =>
+const displayDepartments = () =>
 {
   db.query('SELECT * FROM department', (err, result) =>
   {
@@ -79,28 +80,31 @@ const getDepartments = () =>
       console.log(err);
     }
     console.table(result);
+    init();
   });
 }
 
-const getRoles = () =>
+const displayRoles = () =>
 {
   db.query('SELECT *, department.name FROM role LEFT JOIN department ON role.department_id = department.id', (err, result) =>
   {
     if (err) {
       console.log(err);
     }
-    return console.table(result);
+    console.table(result);
+    init();
   });
 }
 
-const getEmployees = () =>
+const displayEmployees = () =>
 {
   db.query('SELECT *, role.title, role.salary, department.name FROM employee LEFT JOIN role on employee.role_id = role.id LEFT JOIN department on role.department_id = department.id', (err, result) =>
   {
     if (err) {
       console.log(err);
     }
-    return console.table(result);
+    console.table(result);
+    init();
   });
 }
 
@@ -132,23 +136,123 @@ const addDepartment = () =>
         console.log(err);
       }
       console.table(result);
-      getDepartments();
+      displayDepartments();
     });
   });
 }
 
 const addRole = () =>
 {
+  return inquirer.prompt([
+    {
+      type: 'input',
+      name: 'title',
+      message: "What is the name of the role you'd like to add?",
+      validate: titleInput =>
+      {
+        if(titleInput)
+        {
+          return true;
+        }
+        else {
+          console.log('Please enter a role name!');
+          return false;
+        }        
+      }
+    },
+    {
+      type: 'input',
+      name: 'salary',
+      message: 'What is the salary for this role?',
+      validate: salaryInput =>
+      {
+        if(salaryInput)
+        {
+          return true;
+        }
+        else {
+          console.log('Please enter a salary!');
+          return false;
+        }    
+      }
+    },
+  ])
+  .then((answer) =>
+  {
+    let data = [answer.title, answer.salary];
+    db.query('SELECT * FROM DEPARTMENT', (err,result) =>
+    {
+      if (err) {
+        console.log(err);
+      }
+      const deptArr = result.map(({name, id}) => ({name: name, value:id}));
 
+      inquirer.prompt([
+        {
+          type: 'list',
+          name: 'department',
+          message: 'Which department is this role in?',
+          choices: deptArr
+        }
+      ])
+      .then(selection =>
+        {
+          let department = selection.department;
+          data.push(department);
+          db.query(`INSERT INTO ROLE (title, salary, department_id) VALUES (?, ?, ?)`, data , (err, result) =>
+          {
+            if (err) {
+              console.log(err);
+            }
+            console.table(result);
+            displayRoles();
+          });
+        });
+    });
+  });
 }
 
 const addEmployee = () =>
 {
-
+  return inquirer.prompt([
+    {
+      type: 'input',
+      name: 'first',
+      message: "What is the first name of the employee?",
+      validate: firstInput =>
+      {
+        if(firstInput)
+        {
+          return true;
+        }
+        else {
+          console.log('Please enter a first name!');
+          return false;
+        }        
+      }
+    },
+    {
+      type: 'input',
+      name: 'last',
+      message: 'What is the last name of the employee?',
+      validate: lastInput =>
+      {
+        if(lastInput)
+        {
+          return true;
+        }
+        else {
+          console.log('Please enter a last name!');
+          return false;
+        }    
+      }
+    },
+  ])
 }
 
 const updateEmployee = () =>
 {
 
 }
-presentOptions();
+
+init();
