@@ -1,4 +1,17 @@
 const inquirer = require('inquirer');
+const mysql = require('mysql2');
+const cTable = require('console.table');
+
+// Connect to database
+const db = mysql.createConnection(
+  {
+    host: 'localhost',
+    user: 'mike',
+    password: 'password',
+    database: 'employee_db'
+  },
+  console.log('Connected to the employee database.')
+);
 
 const presentOptions = () =>
 {
@@ -23,6 +36,13 @@ const presentOptions = () =>
     if(answer.select === 'View all departments')
     {
       //Return table with department names and ids
+      db.query('SELECT * FROM departments', function (err, result)
+      {
+        if (err) {
+          console.log(err);
+        }
+        console.table(result);
+      });
     }
     if(answer.select === 'View all roles')
     {
