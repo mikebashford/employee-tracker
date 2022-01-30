@@ -27,7 +27,8 @@ const init = () =>
         'Add a department',
         'Add a role',
         'Add an employee',
-        'Update an employee role'
+        'Update an employee role',
+        'Delete a department'
       ]
     }
   ])
@@ -68,6 +69,11 @@ const init = () =>
     {
       //Function that selects an employee to update, then updates their info in database
       updateEmployee();
+    }
+    if(answer.options == 'Delete a department')
+    {
+      //Function that selects an employee to update, then updates their info in database
+      deleteDepartment();
     }
   });
 }
@@ -354,6 +360,46 @@ const updateEmployee = () =>
         })
       })
   })
+}
+
+const deleteDepartment = () =>
+{
+  db.query('SELECT * FROM DEPARTMENT', (err, result) =>
+  {
+    const deptArr = result.map(({name, id}) => ({name: name, value:id}));
+    if (err) {
+      console.log(err);
+    }
+    inquirer.prompt([
+      {
+        type: 'list',
+        name: 'department',
+        message: 'What is the employees new role?',
+        choices: deptArr
+      }
+    ])
+    .then(answer =>
+      {
+        db.query('DELETE FROM DEPARTMENT WHERE id = ?', answer.department, (err, result) =>
+        {
+          if (err) {
+            console.log(err);
+          }
+          console.table(result);
+          displayDepartments();
+        })
+      })
+  })
+}
+
+const deleteRole = () =>
+{
+  
+}
+
+const deleteEmployee = () =>
+{
+  
 }
 
 init();
