@@ -255,7 +255,7 @@ const addEmployee = () =>
           if (err) {
             console.log(err);
           }
-          const roleArr = result.map(({name, id}) => ({name: title, value:id}));
+          const roleArr = result.map(({title, id}) => ({name: title, value:id}));
 
           inquirer.prompt([
             {
@@ -303,7 +303,57 @@ const addEmployee = () =>
 
 const updateEmployee = () =>
 {
+  db.query('SELECT * FROM EMPLOYEE', (err, result) =>
+  {
+    if (err) 
+    {
+      console.log(err);
+    }
+    const employee = result.map(({id,first_name,last_name}) => ({name: first_name + " " + last_name, value:id}));
 
+    inquirer.prompt([
+      {
+        type: 'list',
+        name: 'employeeChosen',
+        message: 'Which employee would you like to update?',
+        choices: employee
+      }
+    ])
+    .then(answer =>
+      {
+        let selectedEmployee = [];
+        let ourEmployee = answer.employeeChosen;
+        db.query('SELECT * FROM ROLE', (err, result) =>
+        {
+          const roleArr = result.map(({id, title}) => ({name: title, value:id}));
+          if (err) {
+            console.log(err);
+          }
+          inquirer.prompt([
+            {
+              type: 'list',
+              name: 'role',
+              message: 'What is the employees new role?',
+              choices: roleArr
+            }
+          ])
+          .then(answer =>
+          {
+              let ourRole = answer.role;
+              selectedEmployee.push(ourRole, ourEmployee);
+          
+           db.query('UPDATE EMPLOYEE SET role_id = ? WHERE id = ?', selectedEmployee, (err,result) =>    
+           {
+            if (err) {
+              console.log(err);
+            }
+            console.table(result);
+            displayEmployees();
+           })
+          })
+        })
+      })
+  })
 }
 
 init();
