@@ -28,7 +28,9 @@ const init = () =>
         'Add a role',
         'Add an employee',
         'Update an employee role',
-        'Delete a department'
+        'Delete a department',
+        'Delete a role',
+        'Delete an employee'
       ]
     }
   ])
@@ -74,6 +76,16 @@ const init = () =>
     {
       //Function that selects an employee to update, then updates their info in database
       deleteDepartment();
+    }
+    if(answer.options == 'Delete a role')
+    {
+      //Function that selects an employee to update, then updates their info in database
+      deleteRole();
+    }
+    if(answer.options == 'Delete an employee')
+    {
+      //Function that selects an employee to update, then updates their info in database
+      deleteEmployee();
     }
   });
 }
@@ -374,7 +386,7 @@ const deleteDepartment = () =>
       {
         type: 'list',
         name: 'department',
-        message: 'What is the employees new role?',
+        message: 'Which department would you like to remove?',
         choices: deptArr
       }
     ])
@@ -394,12 +406,62 @@ const deleteDepartment = () =>
 
 const deleteRole = () =>
 {
-  
+  db.query('SELECT * FROM ROLE', (err, result) =>
+  {
+    const roleArr = result.map(({id, title}) => ({name: title, value:id}));
+    if (err) {
+      console.log(err);
+    }
+    inquirer.prompt([
+      {
+        type: 'list',
+        name: 'role',
+        message: 'Which role would you like to remove?',
+        choices: roleArr
+      }
+    ])
+    .then(answer =>
+      {
+        db.query('DELETE FROM ROLE WHERE id = ?', answer.role, (err, result) =>
+        {
+          if (err) {
+            console.log(err);
+          }
+          console.table(result);
+          displayRoles();
+        })
+      })
+  })
 }
 
 const deleteEmployee = () =>
 {
-  
+  db.query('SELECT * FROM EMPLOYEE', (err, result) =>
+  {
+    const empArr = result.map(({id,first_name,last_name}) => ({name: first_name + " " + last_name, value:id}));
+    if (err) {
+      console.log(err);
+    }
+    inquirer.prompt([
+      {
+        type: 'list',
+        name: 'employee',
+        message: 'Which employee would you like to remove?',
+        choices: empArr
+      }
+    ])
+    .then(answer =>
+      {
+        db.query('DELETE FROM EMPLOYEE WHERE id = ?', answer.employee, (err, result) =>
+        {
+          if (err) {
+            console.log(err);
+          }
+          console.table(result);
+          displayDepartments();
+        })
+      })
+  })
 }
 
 init();
