@@ -25,6 +25,7 @@ const init = () =>
         'View all departments',
         'View all roles',
         'View all employees',
+        'View by department',
         'Add a department',
         'Add a role',
         'Add an employee',
@@ -48,6 +49,9 @@ const init = () =>
         break;
       case 'View all employees':
         displayEmployees();
+        break;
+      case 'View by department':
+        displayByDepartment();
         break;
       case 'Add a department':
         addDepartment();
@@ -92,6 +96,18 @@ const displayDepartments = () =>
 const displayRoles = () =>
 {
   db.query('SELECT *, department.name FROM role LEFT JOIN department ON role.department_id = department.id', (err, result) =>
+  {
+    if (err) {
+      console.log(err);
+    }
+    console.table(result);
+    init();
+  });
+}
+
+const displayByDepartment = () =>
+{
+  db.query('SELECT employee.first_name, employee.last_name, department.name FROM employee LEFT JOIN role ON employee.role_id = role.id LEFT JOIN department ON role.department_id = department.id ORDER BY department.name ASC', (err,result) =>
   {
     if (err) {
       console.log(err);
