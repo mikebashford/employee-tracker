@@ -13,6 +13,7 @@ const db = mysql.createConnection(
   console.log('Connected to the employee database.')
 );
 
+//Start program
 const init = () =>
 {
   return inquirer.prompt([
@@ -170,13 +171,13 @@ const addRole = () =>
       message: 'What is the salary for this role?',
       validate: salaryInput =>
       {
-        if(salaryInput)
+        if(isNaN(salaryInput))
         {
-          return true;
-        }
-        else {
           console.log('Please enter a salary!');
           return false;
+        }
+        else {
+          return true;
         }    
       }
     },
@@ -297,12 +298,12 @@ const addEmployee = () =>
                         }
                         console.table(result);
                         displayEmployees();
-                      })
-                    })
-              })
-            })
-        })
-      })
+                      });
+                    });
+              });
+            });
+        });
+      });
 }
 
 const updateEmployee = () =>
@@ -353,11 +354,11 @@ const updateEmployee = () =>
             }
             console.table(result);
             displayEmployees();
-           })
-          })
-        })
-      })
-  })
+           });
+          });
+        });
+      });
+  });
 }
 
 const deleteDepartment = () =>
@@ -385,9 +386,9 @@ const deleteDepartment = () =>
           }
           console.table(result);
           displayDepartments();
-        })
-      })
-  })
+        });
+      });
+  });
 }
 
 const deleteRole = () =>
@@ -415,9 +416,9 @@ const deleteRole = () =>
           }
           console.table(result);
           displayRoles();
-        })
-      })
-  })
+        });
+      });
+  });
 }
 
 const deleteEmployee = () =>
@@ -445,9 +446,9 @@ const deleteEmployee = () =>
           }
           console.table(result);
           displayEmployees();
-        })
-      })
-  })
+        });
+      });
+  });
 }
 
 const exitProgram = () =>
