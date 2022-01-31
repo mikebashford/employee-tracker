@@ -37,61 +37,41 @@ const init = () =>
   ])
   .then((answer) =>
   {
-    console.log(answer.options);
-    if(answer.options == 'View all departments')
+    switch(answer.options)
     {
-      //Return table with department names and ids
-      displayDepartments();
-    }
-    if(answer.options == 'View all roles')
-    {
-      //Return job title, role id, department, and salary for role
-      displayRoles();
-    }
-    if(answer.options == 'View all employees')
-    {
-      //Return table with employee ids, first name, last name, job title, department, salary, and manager
-      displayEmployees();
-    }
-    if(answer.options == 'Add a department')
-    {
-      //Function to create new department
-      addDepartment();
-    }
-    if(answer.options == 'Add a role')
-    {
-      //Function to enter name, salary, and department for created role
-      addRole();
-    }
-    if(answer.options == 'Add a employee')
-    {
-      //Function to add first name, last name, role, manager, then add to database
-      addEmployee();
-    }
-    if(answer.options == 'Update an employee role')
-    {
-      //Function that selects an employee to update, then updates their info in database
-      updateEmployee();
-    }
-    if(answer.options == 'Delete a department')
-    {
-      //Function that deletes a department from our database
-      deleteDepartment();
-    }
-    if(answer.options == 'Delete a role')
-    {
-      //Function that deletes a role from our database
-      deleteRole();
-    }
-    if(answer.options == 'Delete an employee')
-    {
-      //Function that deletes an employee from our database
-      deleteEmployee();
-    }
-    if(answer.options == 'Exit')
-    {
-      //Function that deletes an employee from our database
-      exitProgram();
+      case 'View all departments':
+        displayDepartments();
+        break;
+      case 'View all roles':
+        displayRoles();
+        break;
+      case 'View all employees':
+        displayEmployees();
+        break;
+      case 'Add a department':
+        addDepartment();
+        break;
+      case 'Add a role':
+        addRole();
+        break;
+      case 'Add an employee':
+        addEmployee();
+        break;
+      case 'Update an employee role':
+        updateEmployee();
+        break;
+      case 'Delete a department':
+        deleteDepartment();
+        break;
+      case 'Delete a role':
+        deleteRole();
+        break;
+      case 'Delete an employee':
+        deleteEmployee();
+        break;
+      case 'Exit':
+        exitProgram();
+        break;
     }
   });
 }
