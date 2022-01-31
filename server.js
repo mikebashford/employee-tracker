@@ -323,7 +323,7 @@ const addEmployee = () =>
                   .then(answer =>
                     {
                       data.push(answer.manager);
-                      db.query('INSERT INTO EMPLOYEE (first_name, last_name, role_id, manager_id VALUES(?,?,?,?', (err, result) =>
+                      db.query('INSERT INTO EMPLOYEE (first_name, last_name, role_id, manager_id) VALUES(?,?,?,?)', data, (err, result) =>
                       {
                         if (err) {
                           console.log(err);
