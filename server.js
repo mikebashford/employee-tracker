@@ -30,7 +30,8 @@ const init = () =>
         'Update an employee role',
         'Delete a department',
         'Delete a role',
-        'Delete an employee'
+        'Delete an employee',
+        'Exit'
       ]
     }
   ])
@@ -74,18 +75,23 @@ const init = () =>
     }
     if(answer.options == 'Delete a department')
     {
-      //Function that selects an employee to update, then updates their info in database
+      //Function that deletes a department from our database
       deleteDepartment();
     }
     if(answer.options == 'Delete a role')
     {
-      //Function that selects an employee to update, then updates their info in database
+      //Function that deletes a role from our database
       deleteRole();
     }
     if(answer.options == 'Delete an employee')
     {
-      //Function that selects an employee to update, then updates their info in database
+      //Function that deletes an employee from our database
       deleteEmployee();
+    }
+    if(answer.options == 'Exit')
+    {
+      //Function that deletes an employee from our database
+      exitProgram();
     }
   });
 }
@@ -458,10 +464,15 @@ const deleteEmployee = () =>
             console.log(err);
           }
           console.table(result);
-          displayDepartments();
+          displayEmployees();
         })
       })
   })
+}
+
+const exitProgram = () =>
+{
+  process.exit();
 }
 
 init();
