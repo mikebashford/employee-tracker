@@ -16,11 +16,11 @@ VALUES  ("Environment Artist", 59482, 1),
         ("Manager", 191673, 4);
 
 INSERT INTO employee(first_name, last_name, role_id, manager_id)
-VALUES  ("John", "Smith", 1, 1),
+VALUES  ("John", "Smith", 8, NULL),
         ("Bob", "Jones", 2,1),
         ("Mary", "Washington",3, 1),
         ("Will", "Robinson", 4, 1),
         ("Josh", "Johnson", 5, 1),
         ("Patrick", "Willis", 6, 1),
         ("Daniel", "Allen", 7, 1),
-        ("Jerry", "Williams", 8, NULL);
+        ("Jerry", "Williams", 1, 1);
